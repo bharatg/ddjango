@@ -3,7 +3,7 @@
 # CONFIGURE THE FOLLOWING SECTION 
 # --------------------------------------------
 
-project_name="name5"
+project_name="naeeme5"
 project_password="password"
 project_ip="127.0.0.1:8000"
 project_domain="domain.com www.domain.com"
@@ -55,7 +55,7 @@ adduser $project_name
 gpasswd -a $project_name sudo
 
 # Django setup as project user
-su $project_name<<EOF
+su /home/$project_name<<EOF
 cd /home/$project_name
 python3 -m venv .
 source bin/activate
