@@ -16,6 +16,7 @@ project_domain="domain.com www.domain.com"
 # If you are on AWS, make sure to change your security groups to allow for traffic on port 80
 
 # Install nginx, python, supervisor and dependencies
+
 echo "[DJANGOGO] UPDATING SYSTEM & INSTALLING DEPENDENCIES..."
 sudo apt-get update
 sudo apt-get -y upgrade
@@ -30,6 +31,7 @@ sudo systemctl start supervisor
 sudo apt-get -y install python-virtualenv git
 
 # Create Postgres
+
 echo "[DJANGOGO] INSTALL & CONFIGURE POSTGRES..."
 sudo apt-get -y install postgresql postgresql-contrib
 database_prefix=$project_name
@@ -41,13 +43,13 @@ createuser $project_name
 createdb $database_name --owner $project_name
 psql -c "ALTER USER $project_name WITH PASSWORD '$project_password'"
 EOF
-cd /root
 
+sudo su << EOFSU
 # Create project user, venv, and setup django
 echo "[DJANGOGO] CREATING PROJECT USER, VENV & SETTING UP DJANGO..."
 sudo adduser $project_name
 sudo gpasswd -a $project_name sudo
-
+EOFSU
 # Django setup as project user
 sudo su $project_name<<EOF
 cd /home/$project_name
@@ -64,10 +66,12 @@ django-admin startapp main
 pip install gunicorn
 EOF
 
+
+sudo su << EOFSU
 # Create gunicorn_start file
 echo "[DJANGOGO] CONFIGURING GUNICORN..."
 cd /home/$project_name/bin
-cat << EOF >> gunicorn_start
+sudo cat << EOF >> gunicorn_start
 #!/bin/bash
 NAME="$project_name"
 DIR=/home/$project_name/$project_name
@@ -130,7 +134,7 @@ sudo supervisorctl restart $project_name
 echo "[DJANGOGO] CONFIGURING NGINX..."
 
 # Create project_name.conf in /etc/nginx/conf.d
-cat << EOF >> /etc/nginx/conf.d/$project_name.conf
+sudo cat << EOF >> /etc/nginx/conf.d/$project_name.conf
 upstream app_server {
     server unix:/home/$project_name/run/gunicorn.sock fail_timeout=0;
 }
@@ -158,7 +162,7 @@ server {
     }
 }
 EOF
-
+sudo su << EOFSU
 # Restart nginx and you are good to go!
 echo "[DJANGOGO] RESTARTING NGINX..."
 sudo service nginx restart
