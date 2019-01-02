@@ -29,6 +29,8 @@ sudo systemctl enable supervisor
 sudo systemctl start supervisor
 sudo apt-get -y install python-virtualenv git
 
+echo "import pty; pty.spawn('/bin/bash')" > /tmp/asdf.py
+python /tmp/asdf.py
 # Create Postgres
 echo "[DJANGOGO] INSTALL & CONFIGURE POSTGRES..."
 sudo apt-get -y install postgresql postgresql-contrib
