@@ -51,8 +51,8 @@ cd /root
 
 # Create project user, venv, and setup django
 echo "[DJANGOGO] CREATING PROJECT USER, VENV & SETTING UP DJANGO..."
-adduser $project_name
-gpasswd -a $project_name sudo
+sudo adduser $project_name
+sudo gpasswd -a $project_name sudo
 
 # Django setup as project user
 su /home/$project_name<<EOF
