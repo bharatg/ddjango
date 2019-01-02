@@ -2,10 +2,10 @@
 # Ubuntu 16.04 LTS / Ubuntu 18.04 LTS
 # CONFIGURE THE FOLLOWING SECTION 
 # --------------------------------------------
-sudo su << EOFSU
+
 project_name="name"
 project_password="password"
-project_ip="000.000.000.000"
+project_ip="127.0.0.1:8000"
 project_domain="domain.com www.domain.com"
 # --------------------------------------------
 # NOTE: project_password serves as the password for postgres database that is created
@@ -31,11 +31,14 @@ sudo systemctl start supervisor
 sudo apt-get -y install python-virtualenv git
 
 # Create Postgres
+
 echo "[DJANGOGO] INSTALL & CONFIGURE POSTGRES..."
 sudo apt-get -y install postgresql postgresql-contrib
 database_prefix=$project_name
 database_suffix="_prod"
 database_name=$database_prefix$database_suffix
+
+sudo su << EOFSU
 su postgres<<EOF
 
 cd ~
@@ -43,6 +46,7 @@ createuser $project_name
 createdb $database_name --owner $project_name
 psql -c "ALTER USER $project_name WITH PASSWORD '$project_password'"
 EOF
+
 cd /root
 
 # Create project user, venv, and setup django
@@ -120,7 +124,7 @@ autorestart=true
 redirect_stderr=true
 stdout_logfile=/home/$project_name/logs/gunicorn-error.log
 EOF
-
+EOFSU
 # Restart Supervisor
 echo "[DJANGOGO] RESTARTING SUPERVISOR..."
 sudo supervisorctl reread
@@ -130,7 +134,7 @@ sudo supervisorctl restart $project_name
 
 # Configure Nginx
 echo "[DJANGOGO] CONFIGURING NGINX..."
-
+sudo su << EOFSU
 # Create project_name.conf in /etc/nginx/conf.d
 cat << EOF >> /etc/nginx/conf.d/$project_name.conf
 upstream app_server {
@@ -160,7 +164,7 @@ server {
     }
 }
 EOF
-
+EOFSU
 # Restart nginx and you are good to go!
 echo "[DJANGOGO] RESTARTING NGINX..."
 sudo service nginx restart
