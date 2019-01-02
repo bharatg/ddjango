@@ -3,7 +3,7 @@
 # CONFIGURE THE FOLLOWING SECTION 
 # --------------------------------------------
 
-project_name="name"
+project_name="name5"
 project_password="password"
 project_ip="127.0.0.1:8000"
 project_domain="domain.com www.domain.com"
@@ -170,4 +170,3 @@ echo "[DJANGOGO] RESTARTING NGINX..."
 sudo service nginx restart
 echo "[DJANGOGO] COMPLETE!"
 echo "[DJANGOGO] VISIT: http://$project_ip"
-EOFSU
