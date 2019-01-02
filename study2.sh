@@ -2,7 +2,7 @@
 # Ubuntu 16.04 LTS / Ubuntu 18.04 LTS
 # CONFIGURE THE FOLLOWING SECTION 
 # --------------------------------------------
-sudo su <<EOFSU
+sudo su << EOFSU
 project_name="name"
 project_password="password"
 project_ip="000.000.000.000"
@@ -38,7 +38,6 @@ database_suffix="_prod"
 database_name=$database_prefix$database_suffix
 su postgres<<EOF
 
-EOFSU
 cd ~
 createuser $project_name
 createdb $database_name --owner $project_name
@@ -167,3 +166,4 @@ echo "[DJANGOGO] RESTARTING NGINX..."
 sudo service nginx restart
 echo "[DJANGOGO] COMPLETE!"
 echo "[DJANGOGO] VISIT: http://$project_ip"
+EOFSU
