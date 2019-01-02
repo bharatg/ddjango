@@ -2,10 +2,9 @@
 # Ubuntu 16.04 LTS / Ubuntu 18.04 LTS
 # CONFIGURE THE FOLLOWING SECTION 
 # --------------------------------------------
-sudo su << EOFSU
-project_name="name7"
-project_password="password4"
-project_ip="127.0.0.1:8000"
+project_name="name"
+project_password="password"
+project_ip="000.000.000.000"
 project_domain="domain.com www.domain.com"
 # --------------------------------------------
 # NOTE: project_password serves as the password for postgres database that is created
@@ -42,14 +41,13 @@ createuser $project_name
 createdb $database_name --owner $project_name
 psql -c "ALTER USER $project_name WITH PASSWORD '$project_password'"
 EOF
+cd /root
 
-
-sudo su <<EOFSU
 # Create project user, venv, and setup django
 echo "[DJANGOGO] CREATING PROJECT USER, VENV & SETTING UP DJANGO..."
-yes '' | adduser --disabled-password --quiet bha43
+adduser $project_name
 gpasswd -a $project_name sudo
-EOFSU
+
 # Django setup as project user
 su $project_name<<EOF
 cd /home/$project_name
@@ -166,4 +164,3 @@ echo "[DJANGOGO] RESTARTING NGINX..."
 sudo service nginx restart
 echo "[DJANGOGO] COMPLETE!"
 echo "[DJANGOGO] VISIT: http://$project_ip"
-EOFSU
